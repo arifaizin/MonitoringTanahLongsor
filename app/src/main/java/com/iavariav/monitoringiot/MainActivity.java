@@ -141,6 +141,24 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                     }
+                     else if (responseModel.getStatus().equalsIgnoreCase("Siaga")){
+                        ApiService service = ApiConfigServer.getApiService();
+                        service.postData(responseModel.getStatus(), "Siaga Segera di Tindak Lanjuti", "individual", regId)
+                                .enqueue(new Callback<ResponseBody>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                        if (response.isSuccessful()){
+                                            Log.e(TAG, "onResponse: " + "Notif sukses");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                        Toast.makeText(MainActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+                    }
 
                 }
             }
