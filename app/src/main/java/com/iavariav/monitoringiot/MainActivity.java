@@ -1,10 +1,15 @@
 package com.iavariav.monitoringiot;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -13,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -39,17 +45,20 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvKemiringan;
     private TextView tvStatus;
     private EditText edtRegID;
+    private TextView tvWaktu;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private NotificationManager mManager;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
 //        getTime();
-
+        getData();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -77,20 +86,14 @@ public class MainActivity extends AppCompatActivity {
         displayFirebaseRegId();
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        getData();
-    }
-
     private void getTime() {
 
         new CountDownTimer(120000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-//                mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+                tvWaktu.setText("" + millisUntilFinished / 1000 + " detik");
                 //here you can have your logic to set text to edittext
-                Toast.makeText(MainActivity.this, "" + millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "" + millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
             }
 
             public void onFinish() {
@@ -112,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                     tvDate.setText(responseModel.getTanggal());
                     tvClock.setText(responseModel.getWaktu());
                     tvCurahHujan.setText(responseModel.getCurahHujan() + "°C");
-                    tvKadarAir.setText(responseModel.getKadarAir()  + "°C");
+                    tvKadarAir.setText(responseModel.getKadarAir() + "°C");
                     tvPergeseran.setText(responseModel.getPergeseran() + "°");
                     tvKemiringan.setText(responseModel.getKemiringan() + "°");
                     tvStatus.setText(responseModel.getStatus());
@@ -176,5 +179,6 @@ public class MainActivity extends AppCompatActivity {
         tvKemiringan = findViewById(R.id.tvKemiringan);
         tvStatus = findViewById(R.id.tvStatus);
         edtRegID = findViewById(R.id.edtRegID);
+        tvWaktu = findViewById(R.id.tvWaktu);
     }
 }
