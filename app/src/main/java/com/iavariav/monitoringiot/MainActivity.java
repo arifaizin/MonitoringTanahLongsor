@@ -1,14 +1,11 @@
 package com.iavariav.monitoringiot;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -26,17 +23,21 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.iavariav.monitoringiot.helper.Config;
 import com.iavariav.monitoringiot.model.ResponseModel;
 import com.iavariav.monitoringiot.rest.ApiConfig;
+import com.iavariav.monitoringiot.rest.ApiConfigServer;
 import com.iavariav.monitoringiot.rest.ApiService;
 import com.iavariav.monitoringiot.util.NotificationUtils;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private String regId;
+
     private ResponseModel responseModel;
-    private String s;
+
     private TextView tvDate;
     private TextView tvClock;
     private TextView tvCurahHujan;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
 //        getTime();
         getData();
+        displayFirebaseRegId();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        displayFirebaseRegId();
+
     }
 
     private void getTime() {
@@ -121,6 +123,25 @@ public class MainActivity extends AppCompatActivity {
                     tvStatus.setText(responseModel.getStatus());
                     getTime();
 
+                    if (responseModel.getStatus().equalsIgnoreCase("Bahaya")){
+                        ApiService service = ApiConfigServer.getApiService();
+                        service.postData(responseModel.getStatus(), "Bahaya Segera di Tindak Lanjuti", "individual", regId)
+                                .enqueue(new Callback<ResponseBody>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                        if (response.isSuccessful()){
+                                            Log.e(TAG, "onResponse: " + "Notif sukses");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                        Toast.makeText(MainActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+                    }
+
                 }
             }
 
@@ -137,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     // and displays on the screen
     private void displayFirebaseRegId() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
-        String regId = pref.getString("regId", null);
+        regId = pref.getString("regId", null);
 
         Log.e(TAG, "Firebase reg id: " + regId);
 

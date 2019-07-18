@@ -8,49 +8,17 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @GET("api_get.php")
     Call<ResponseModel> ambilData();
+    @GET("firebase")
+    Call<ResponseBody> postData(
+            @Query("title") String title,
+            @Query("message") String message,
+            @Query("push_type") String push_type,
+            @Query("regId") String regId
 
-    @FormUrlEncoded
-    @POST("api_login.php")
-    Call<ResponseBody> login(@Field("username") String username,
-                             @Field("password") String password);
-
-    @FormUrlEncoded
-    @POST("api_hapus_barang.php")
-    Call<ResponseBody> deleteData(@Field("id_barang") String id);
-
-    @FormUrlEncoded
-    @POST("api_tambah_barang.php")
-    Call<ResponseBody> tambahData(
-            @Field("nama_barang") String nama_barang,
-            @Field("image_barang") String image_barang,
-            @Field("deskripsi_barang") String deskripsi_barang,
-            @Field("harga_barang") String harga_barang,
-            @Field("stok_barang") String stok_barang
     );
-
-
-
-
-    @FormUrlEncoded
-    @POST("api_update_barang.php")
-    Call<ResponseBody> updateData(
-            @Field("id_barang") String id_barang,
-            @Field("nama_barang") String nama_barang,
-            @Field("image_barang") String image_barang,
-            @Field("deskripsi_barang") String deskripsi_barang,
-            @Field("harga_barang") String harga_barang,
-            @Field("stok_barang") String stok_barang
-    );
-
-    @FormUrlEncoded
-    @POST("api_beli_barang.php")
-    Call<ResponseBody> beliData(
-            @Field("id_barang") String id_barang
-    );
-
-
 }
