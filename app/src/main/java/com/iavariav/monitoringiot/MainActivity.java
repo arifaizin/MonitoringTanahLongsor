@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String message = intent.getStringExtra("message");
 
-                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Peringatan : " + message, Toast.LENGTH_LONG).show();
 
                     edtRegID.setText(message);
                 }
