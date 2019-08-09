@@ -13,6 +13,7 @@ import retrofit2.http.Query;
 public interface ApiService {
     @GET("api_get.php")
     Call<ResponseModel> ambilData();
+
     @GET("firebase")
     Call<ResponseBody> postData(
             @Query("title") String title,

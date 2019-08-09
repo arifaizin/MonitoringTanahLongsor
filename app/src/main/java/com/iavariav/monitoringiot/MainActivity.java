@@ -1,5 +1,6 @@
 package com.iavariav.monitoringiot;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,6 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@SuppressWarnings("ALL")
 public class MainActivity extends AppCompatActivity {
 
     private String regId;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvPergeseran;
     private TextView tvKemiringan;
     private TextView tvStatus;
+    private TextView tvStatusUtama;
     private EditText edtRegID;
     private TextView tvWaktu;
 
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportActionBar().hide();
         initView();
 //        getTime();
         getData();
@@ -106,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         }.start();
     }
+    @SuppressLint("SetTextI18n")
 
     private void getData() {
         ApiService apiService = ApiConfig.getApiService();
@@ -116,14 +122,16 @@ public class MainActivity extends AppCompatActivity {
                     responseModel = response.body();
                     tvDate.setText(responseModel.getTanggal());
                     tvClock.setText(responseModel.getWaktu());
-                    tvCurahHujan.setText(responseModel.getCurahHujan() + "°C");
-                    tvKadarAir.setText(responseModel.getKadarAir() + "°C");
-                    tvPergeseran.setText(responseModel.getPergeseran() + "°");
+                    tvCurahHujan.setText(responseModel.getCurahHujan() + " mm");
+                    tvKadarAir.setText(responseModel.getKadarAir() + " %");
+                    tvPergeseran.setText(responseModel.getPergeseran() + " cm");
                     tvKemiringan.setText(responseModel.getKemiringan() + "°");
                     tvStatus.setText(responseModel.getStatus());
-                    getTime();
+                    tvStatusUtama.setText(responseModel.getStatus());
 
+                    getTime();
                     if (responseModel.getStatus().equalsIgnoreCase("Bahaya")){
+                        tvStatusUtama.setBackgroundColor(android.R.color.holo_red_light);
                         ApiService service = ApiConfigServer.getApiService();
                         service.postData(responseModel.getStatus(), "Bahaya Segera di Tindak Lanjuti", "individual", regId)
                                 .enqueue(new Callback<ResponseBody>() {
@@ -133,15 +141,14 @@ public class MainActivity extends AppCompatActivity {
                                             Log.e(TAG, "onResponse: " + "Notif sukses");
                                         }
                                     }
-
                                     @Override
                                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                                         Toast.makeText(MainActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-
                                     }
                                 });
                     }
-                     else if (responseModel.getStatus().equalsIgnoreCase("Siaga")){
+                    else if (responseModel.getStatus().equalsIgnoreCase("Siaga")){
+                        tvStatusUtama.setBackgroundColor(android.R.color.holo_orange_light);
                         ApiService service = ApiConfigServer.getApiService();
                         service.postData(responseModel.getStatus(), "Siaga Segera di Tindak Lanjuti", "individual", regId)
                                 .enqueue(new Callback<ResponseBody>() {
@@ -151,22 +158,18 @@ public class MainActivity extends AppCompatActivity {
                                             Log.e(TAG, "onResponse: " + "Notif sukses");
                                         }
                                     }
-
                                     @Override
                                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                                         Toast.makeText(MainActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-
                                     }
                                 });
                     }
-
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(MainActivity.this, "Gagal mengambil data" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -217,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
         tvPergeseran = findViewById(R.id.tvPergeseran);
         tvKemiringan = findViewById(R.id.tvKemiringan);
         tvStatus = findViewById(R.id.tvStatus);
+        tvStatusUtama = findViewById(R.id.tvStatusUtama);
         edtRegID = findViewById(R.id.edtRegID);
         tvWaktu = findViewById(R.id.tvWaktu);
     }
