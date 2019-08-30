@@ -20,6 +20,5 @@ public interface ApiService {
             @Query("message") String message,
             @Query("push_type") String push_type,
             @Query("regId") String regId
-
     );
 }

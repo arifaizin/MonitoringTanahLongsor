@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                     getTime();
                     if (responseModel.getStatus().equalsIgnoreCase("Bahaya")){
-                        tvStatusUtama.setBackgroundColor(android.R.color.holo_red_light);
+                        tvStatusUtama.setBackgroundResource(android.R.color.holo_red_light);
                         ApiService service = ApiConfigServer.getApiService();
                         service.postData(responseModel.getStatus(), "Bahaya Segera di Tindak Lanjuti", "individual", regId)
                                 .enqueue(new Callback<ResponseBody>() {
@@ -147,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                     }
-                    else if (responseModel.getStatus().equalsIgnoreCase("Siaga")){
-                        tvStatusUtama.setBackgroundColor(android.R.color.holo_orange_light);
+                    else if (responseModel.getStatus().equalsIgnoreCase("Siaga") || responseModel.getStatus().equalsIgnoreCase("Waspada") ){
+                        tvStatusUtama.setBackgroundResource(android.R.color.holo_orange_light);
                         ApiService service = ApiConfigServer.getApiService();
                         service.postData(responseModel.getStatus(), "Siaga Segera di Tindak Lanjuti", "individual", regId)
                                 .enqueue(new Callback<ResponseBody>() {
@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     // Fetches reg id from shared preferences
     // and displays on the screen
