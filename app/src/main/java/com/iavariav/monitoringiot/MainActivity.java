@@ -122,10 +122,34 @@ public class MainActivity extends AppCompatActivity {
                     responseModel = response.body();
                     tvDate.setText(responseModel.getTanggal());
                     tvClock.setText(responseModel.getWaktu());
-                    tvCurahHujan.setText(responseModel.getCurahHujan() + " mm");
-                    tvKadarAir.setText(responseModel.getKadarAir() + " %");
-                    tvPergeseran.setText(responseModel.getPergeseran() + " cm");
-                    tvKemiringan.setText(responseModel.getKemiringan() + "°");
+                    Double curahHujan = Double.valueOf(responseModel.getCurahHujan());
+                    if (curahHujan > 500 || curahHujan < 0){
+                        tvCurahHujan.setText("error");
+                    } else {
+                        tvCurahHujan.setText(curahHujan + " mm");
+                    }
+
+                    Double kadarAir = Double.valueOf(responseModel.getKadarAir());
+                    if (kadarAir > 100 || kadarAir < 0){
+                        tvKadarAir.setText("error");
+                    } else {
+                        tvKadarAir.setText(kadarAir + " %");
+                    }
+
+                    Double pergeseran = Double.valueOf(responseModel.getPergeseran());
+                    if (pergeseran > 5 || pergeseran < 0){
+                        tvPergeseran.setText("error");
+                    } else {
+                        tvPergeseran.setText(pergeseran + " m");
+                    }
+
+                    Double kemiringan = Double.valueOf(responseModel.getKemiringan());
+                    if (kemiringan > 45 || kemiringan < 0){
+                        tvKemiringan.setText("error");
+                    } else {
+                        tvKemiringan.setText(kemiringan + "°");
+                    }
+
                     tvStatus.setText(responseModel.getStatus());
                     tvStatusUtama.setText(responseModel.getStatus());
 
